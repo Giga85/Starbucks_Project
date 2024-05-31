@@ -37,7 +37,10 @@ Data :
   + transcript.json 
 
 Github link:
-https://github.com/Giga85/Starbuks_Project
+https://github.com/Giga85/Starbucks_Project
+Medium link:
+https://medium.com/@giga16785/udacity-data-scientist-capstone-project-starbucks-dataset-f770febaeb1f
 
-Licensing, Authors, Acknowledgements .
+Licensing, Authors, Acknowledgements:
+
 All dataset used for this project was provided by Udacity.
