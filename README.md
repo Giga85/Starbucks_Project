@@ -25,16 +25,16 @@ keras
 
 This repository contains 3 files.
 
-Starbucks_Capstone_notebook_Final.ipynb: notebook off the project code.
+  + Starbucks_Capstone_notebook_Final.ipynb: notebook off the project code.
 
-Starbucks_Capstone_notebook_Final.html: html version of the notebook.
+  + Starbucks_Capstone_notebook_Final.html: html version of the notebook.
 
-Starbucks_Capstone_notebook_Final.pdf: final report of the project.
+  + Starbucks_Capstone_notebook_Final.pdf: final report of the project.
 
 Data :
-Profile.json
-Portfolio.json
-transcript.json 
+  + Profile.json
+  + Portfolio.json
+  + transcript.json 
 
 Github link:
 https://github.com/Giga85/Starbuks_Project
