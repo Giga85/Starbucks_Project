@@ -26,7 +26,9 @@ keras
 This repository contains 3 files.
 
 Starbucks_Capstone_notebook_Final.ipynb: notebook off the project code.
+
 Starbucks_Capstone_notebook_Final.html: html version of the notebook.
+
 Starbucks_Capstone_notebook_Final.pdf: final report of the project.
 
 Data :
