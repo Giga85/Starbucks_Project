@@ -1,4 +1,4 @@
-# Starbuks_Project
+# Starbucks_Project
 Udacity Capstone Project: Starbucks dataset
 
 # 1. Project Overview:
