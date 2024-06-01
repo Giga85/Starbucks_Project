@@ -23,13 +23,15 @@ keras
 
 # 4. File Descriptions:
 
-This repository contains 3 files.
+This repository contains 4 files.
 
-  + Starbucks_Capstone_notebook_Final.ipynb: notebook off the project code.
+  + Starbucks_Capstone_notebook_Final.ipynb: notebook of the project code.
+    
+  + Starbucks_Capstone_notebook_Final.py: python file the project code.
 
   + Starbucks_Capstone_notebook_Final.html: html version of the notebook.
 
-  + Starbucks_Capstone_notebook_Final.pdf: final report of the project.
+  + Report_Starbucks_Capstone_notebook_Final.pdf: final report of the project.
 
 Data :
   + Profile.json
