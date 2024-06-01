@@ -111,11 +111,26 @@ transcript = pd.read_json('data/transcript.json', orient='records', lines=True)
 portfolio.head()
 
 
-# In[3]:
+# In[5]:
 
 
 portfolio.shape
 
+
+# consists of 10 rows (offers)  x 6 columns storing offers sent during 30-day test period. 
+# - channels: (list) web, email, mobile, social
+# - difficulty: (numeric) money required to be spent to receive reward
+# - duration: (numeric) time for offer to be open, in days
+# - id: (string/hash)
+# - offer_type: (string) bogo, discount, informational
+# 
+# ● In a BOGO offer, a user needs to spend a certain amount to get a reward equal to that threshold amount.
+# 
+# ● In a discount, a user gains a reward equal to a fraction of the amount spent.
+# 
+# ● In an informational offer, there is no reward, but neither is there a requisite amount that the user is expected to spend.
+# - reward: (numeric) money awarded for the amount spent
+# 
 
 # In[4]:
 
@@ -135,14 +150,22 @@ profile.head()
 # In[6]:
 
 
-# Check if there are nulls
-profile.isnull().sum()
+profile.shape
 
+
+# demographic data for each customer (17000 users x 5 fields)
+# - age: (numeric) missing value encoded as 118
+# - became_member_on: (string)
+# - gender: (categorical) M, F, O, or null
+# - id: (string/hash)
+# - income (numeric)
+# 
 
 # In[7]:
 
 
-profile.shape
+# Check if there are nulls
+profile.isnull().sum()
 
 
 # Missing data for gender, income is present for 2175 out of 17000. It is quite high
@@ -166,10 +189,16 @@ plt.hist(profile.age, bins = 20)
 
 # #### transcript data frame
 
-# In[10]:
+# In[8]:
 
 
 transcript.head()
+
+
+# In[9]:
+
+
+transcript.shape
 
 
 # In[11]:
@@ -179,18 +208,25 @@ transcript.head()
 transcript.isnull().sum()
 
 
-# In[12]:
-
-
-transcript.shape
-
+# transcript dataset records for transactions, offers received, offers viewed, and offers completed (306648 events x 4 fields)
+# - event: (string) offer received, offer viewed, transaction, offer completed
+# - person: (string/hash)
+# - time: (numeric) hours after start of test
+# - value: (dictionary) different values depending on event type
+# 
+# ● offer id: (string/hash) not associated with any "transaction"
+# 
+# ● amount: (numeric) money spent in "transaction"
+# 
+# ● reward: (numeric) money gained from "offer completed"
+# 
 
 # #### Data cleaning
 
 # #### 1. Portfolio
 # Columns channels and offer_type should be broken up into columns with binary values.
 
-# In[13]:
+# In[10]:
 
 
 # Create columns of 1's and 0's for channel type
@@ -204,27 +240,27 @@ for channel in portfolio['channels']:
             portfolio[item] = 0 
 
 
-# In[14]:
+# In[11]:
 
 
 portfolio_dummies = pd.get_dummies(portfolio['offer_type'])
 
 
-# In[15]:
+# In[12]:
 
 
 # break offer_type into columns
 portfolio_merged = pd.concat([portfolio, portfolio_dummies],axis=1)
 
 
-# In[16]:
+# In[13]:
 
 
 # Drop columns channels and offer_type
 portfolio_clean = portfolio_merged.drop(['channels','offer_type'],axis=1)
 
 
-# In[17]:
+# In[14]:
 
 
 portfolio_clean.head()
@@ -234,7 +270,7 @@ portfolio_clean.head()
 
 # Null values in column gender will be changed to unknown
 
-# In[18]:
+# In[15]:
 
 
 profile['gender'][profile['gender'].isnull()] = 'unknown'
@@ -242,14 +278,14 @@ profile['gender'][profile['gender'].isnull()] = 'unknown'
 
 # break offer_type into columns
 
-# In[19]:
+# In[16]:
 
 
 profile_dummies = pd.get_dummies(profile['gender'])
 profile_merged = pd.concat([profile, profile_dummies],axis=1)
 
 
-# In[20]:
+# In[17]:
 
 
 profile_merged.head()
@@ -257,7 +293,7 @@ profile_merged.head()
 
 # Check income distribution
 
-# In[21]:
+# In[18]:
 
 
 plt.hist(profile_merged['income'][profile_merged['income'].notnull()], bins = 20)
@@ -265,7 +301,7 @@ plt.hist(profile_merged['income'][profile_merged['income'].notnull()], bins = 20
 
 # Impute random incomes into income
 
-# In[22]:
+# In[19]:
 
 
 num_null = profile_merged['income'].isnull().sum()
@@ -278,7 +314,7 @@ for idx in range(0,profile_merged.shape[0]):
         n+=1
 
 
-# In[23]:
+# In[20]:
 
 
 # Check new income distribution
@@ -287,7 +323,7 @@ plt.hist(profile_merged['income'], bins = 20)
 
 # Replace special values in age column to a random sample
 
-# In[24]:
+# In[21]:
 
 
 #Change age == 118 to a random sample
@@ -302,7 +338,7 @@ for idx in range(0,profile_merged.shape[0]):
         n+=1
 
 
-# In[25]:
+# In[22]:
 
 
 #Check new distribution
@@ -311,7 +347,7 @@ plt.hist(profile_merged['age'], bins = 20)
 
 # Convert became_member_on to days_as_member
 
-# In[26]:
+# In[23]:
 
 
 # Change became_member_on to days_as_member
@@ -325,13 +361,13 @@ profile_merged['days_as_member'] = days_as_member
 
 # Remove columns 'gender','became_member_on'
 
-# In[27]:
+# In[24]:
 
 
 profile_clean = profile_merged.drop(['gender','became_member_on'],axis=1)
 
 
-# In[28]:
+# In[25]:
 
 
 #Check data 
@@ -342,10 +378,9 @@ profile_clean.head(10)
 
 # Pull out values of offer_id and break into columns
 
-# In[29]:
+# In[ ]:
 
 
-# Pull offer id, reward, and transaction amount out of value
 # Break event into multiple columns
 people = transcript['person'].drop_duplicates()
 transaction_df = pd.DataFrame({'person':[],'offer_id':[],'offer_recieved':[],
@@ -433,14 +468,14 @@ for person in people:
 
 # Create a new column showing transaction
 
-# In[30]:
+# In[ ]:
 
 
 # Create column showing transaction minus reward
 transaction_df['net_transaction'] = transaction_df['transaction_amount'] - transaction_df['reward']
 
 
-# In[31]:
+# In[ ]:
 
 
 transaction_df.head()
