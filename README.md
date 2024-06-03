@@ -36,7 +36,7 @@ This repository contains 4 files.
 Data :
   + Profile.json
   + Portfolio.json
-  + transcript.json (It is bigger than 25MB, you can find it at [here](https://www.kaggle.com/datasets/blacktile/starbucks-app-customer-reward-program-data)
+  + transcript.json (It is bigger than 25MB, you can find it at [here](https://www.kaggle.com/datasets/blacktile/starbucks-app-customer-reward-program-data))
 
 Github link:
 https://github.com/Giga85/Starbucks_Project
