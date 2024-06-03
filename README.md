@@ -39,9 +39,11 @@ Data :
   + transcript.json (It is bigger than 25MB, you can find it at [here](https://www.kaggle.com/datasets/blacktile/starbucks-app-customer-reward-program-data))
 
 Github link:
+
 https://github.com/Giga85/Starbucks_Project
 
 Medium link:
+
 https://medium.com/@giga16785/udacity-data-scientist-capstone-project-starbucks-dataset-f13b99a05ece
 
 Licensing, Authors, Acknowledgements:
