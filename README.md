@@ -42,7 +42,7 @@ Github link:
 https://github.com/Giga85/Starbucks_Project
 
 Medium link:
-https://medium.com/@giga16785/udacity-data-scientist-capstone-project-starbucks-dataset-f770febaeb1f
+https://medium.com/@giga16785/udacity-data-scientist-capstone-project-starbucks-dataset-f13b99a05ece
 
 Licensing, Authors, Acknowledgements:
 
