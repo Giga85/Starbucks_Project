@@ -111,10 +111,22 @@ transcript = pd.read_json('data/transcript.json', orient='records', lines=True)
 portfolio.head()
 
 
-# In[5]:
+# In[3]:
 
 
 portfolio.shape
+
+
+# In[4]:
+
+
+portfolio.info()
+
+
+# In[5]:
+
+
+portfolio.describe()
 
 
 # consists of 10 rows (offers)  x 6 columns storing offers sent during 30-day test period. 
@@ -132,7 +144,7 @@ portfolio.shape
 # - reward: (numeric) money awarded for the amount spent
 # 
 
-# In[4]:
+# In[6]:
 
 
 # Check if there are nulls
@@ -141,13 +153,13 @@ portfolio.isnull().sum()
 
 # #### profile data frame
 
-# In[5]:
+# In[7]:
 
 
 profile.head()
 
 
-# In[6]:
+# In[8]:
 
 
 profile.shape
@@ -161,7 +173,7 @@ profile.shape
 # - income (numeric)
 # 
 
-# In[7]:
+# In[9]:
 
 
 # Check if there are nulls
@@ -170,7 +182,13 @@ profile.isnull().sum()
 
 # Missing data for gender, income is present for 2175 out of 17000. It is quite high
 
-# In[8]:
+# In[10]:
+
+
+profile.info()
+
+
+# In[11]:
 
 
 profile.describe()
@@ -178,7 +196,7 @@ profile.describe()
 
 # We can see that, age is very high
 
-# In[9]:
+# In[12]:
 
 
 # Check age distribution
@@ -189,23 +207,29 @@ plt.hist(profile.age, bins = 20)
 
 # #### transcript data frame
 
-# In[8]:
+# In[13]:
 
 
 transcript.head()
 
 
-# In[9]:
+# In[14]:
 
 
 transcript.shape
 
 
-# In[11]:
+# In[15]:
 
 
 # Check if there are nulls
 transcript.isnull().sum()
+
+
+# In[16]:
+
+
+transcript.info()
 
 
 # transcript dataset records for transactions, offers received, offers viewed, and offers completed (306648 events x 4 fields)
@@ -221,15 +245,22 @@ transcript.isnull().sum()
 # ● reward: (numeric) money gained from "offer completed"
 # 
 
+# In[17]:
+
+
+transcript.describe()
+
+
 # #### Data cleaning
 
 # #### 1. Portfolio
 # Columns channels and offer_type should be broken up into columns with binary values.
 
-# In[10]:
+# Break column chanels into 4 columns with values 0, 1
+
+# In[18]:
 
 
-# Create columns of 1's and 0's for channel type
 channel_items = ['web','email','mobile','social']
 
 for channel in portfolio['channels']:
@@ -240,27 +271,29 @@ for channel in portfolio['channels']:
             portfolio[item] = 0 
 
 
-# In[11]:
+# Break offer_type into columns
+
+# In[19]:
 
 
 portfolio_dummies = pd.get_dummies(portfolio['offer_type'])
 
 
-# In[12]:
+# In[20]:
 
 
-# break offer_type into columns
 portfolio_merged = pd.concat([portfolio, portfolio_dummies],axis=1)
 
 
-# In[13]:
+# Drop columns channels and offer_type after breaking
+
+# In[21]:
 
 
-# Drop columns channels and offer_type
 portfolio_clean = portfolio_merged.drop(['channels','offer_type'],axis=1)
 
 
-# In[14]:
+# In[22]:
 
 
 portfolio_clean.head()
@@ -270,7 +303,7 @@ portfolio_clean.head()
 
 # Null values in column gender will be changed to unknown
 
-# In[15]:
+# In[23]:
 
 
 profile['gender'][profile['gender'].isnull()] = 'unknown'
@@ -278,14 +311,14 @@ profile['gender'][profile['gender'].isnull()] = 'unknown'
 
 # break offer_type into columns
 
-# In[16]:
+# In[24]:
 
 
 profile_dummies = pd.get_dummies(profile['gender'])
 profile_merged = pd.concat([profile, profile_dummies],axis=1)
 
 
-# In[17]:
+# In[25]:
 
 
 profile_merged.head()
@@ -293,7 +326,7 @@ profile_merged.head()
 
 # Check income distribution
 
-# In[18]:
+# In[26]:
 
 
 plt.hist(profile_merged['income'][profile_merged['income'].notnull()], bins = 20)
@@ -301,7 +334,7 @@ plt.hist(profile_merged['income'][profile_merged['income'].notnull()], bins = 20
 
 # Impute random incomes into income
 
-# In[19]:
+# In[27]:
 
 
 num_null = profile_merged['income'].isnull().sum()
@@ -314,7 +347,7 @@ for idx in range(0,profile_merged.shape[0]):
         n+=1
 
 
-# In[20]:
+# In[28]:
 
 
 # Check new income distribution
@@ -323,10 +356,9 @@ plt.hist(profile_merged['income'], bins = 20)
 
 # Replace special values in age column to a random sample
 
-# In[21]:
+# In[29]:
 
 
-#Change age == 118 to a random sample
 num_118 = sum(profile_merged['age']==118)
 
 age_samples = random.choices(list(profile_merged['age'][profile_merged['age']!=118]),k=num_118)
@@ -338,7 +370,7 @@ for idx in range(0,profile_merged.shape[0]):
         n+=1
 
 
-# In[22]:
+# In[30]:
 
 
 #Check new distribution
@@ -347,10 +379,9 @@ plt.hist(profile_merged['age'], bins = 20)
 
 # Convert became_member_on to days_as_member
 
-# In[23]:
+# In[31]:
 
 
-# Change became_member_on to days_as_member
 days_as_member = []
 today = datetime.datetime.today()
 for idx in range(0,profile_merged.shape[0]):
@@ -361,13 +392,13 @@ profile_merged['days_as_member'] = days_as_member
 
 # Remove columns 'gender','became_member_on'
 
-# In[24]:
+# In[32]:
 
 
 profile_clean = profile_merged.drop(['gender','became_member_on'],axis=1)
 
 
-# In[25]:
+# In[33]:
 
 
 #Check data 
@@ -378,23 +409,19 @@ profile_clean.head(10)
 
 # Pull out values of offer_id and break into columns
 
-# In[ ]:
+# In[34]:
 
 
-# Break event into multiple columns
 people = transcript['person'].drop_duplicates()
 transaction_df = pd.DataFrame({'person':[],'offer_id':[],'offer_recieved':[],
                               'offer_viewed':[],'offer_completed':[],
                               'reward':[],'transaction_amount':[]})
 
 for person in people:
-# for each person
 
-    #create df of each person
-    person_df = transcript[transcript['person']==person]
+    person_df = transcript[transcript['person']==person]#create df of each person
 
-    #create offer recieved df
-    person_event_df = person_df[person_df['event']=='offer received']
+    person_event_df = person_df[person_df['event']=='offer received'] #create offer recieved df
     
     #Create blank lists to append
     offer_id_list = []
@@ -468,14 +495,13 @@ for person in people:
 
 # Create a new column showing transaction
 
-# In[ ]:
+# In[35]:
 
 
-# Create column showing transaction minus reward
 transaction_df['net_transaction'] = transaction_df['transaction_amount'] - transaction_df['reward']
 
 
-# In[ ]:
+# In[36]:
 
 
 transaction_df.head()
@@ -485,14 +511,14 @@ transaction_df.head()
 
 # Rename columns
 
-# In[32]:
+# In[37]:
 
 
 #Change column name id to person
 profile_clean2 = profile_clean.rename({'id':'person'}, axis=1)
 
 
-# In[33]:
+# In[38]:
 
 
 #Chnage column name id to offer_id
@@ -501,7 +527,7 @@ portfolio_clean2 = portfolio_clean.rename({'id':'offer_id'},axis=1)
 
 # Merge datasets
 
-# In[34]:
+# In[39]:
 
 
 #Combine profile data
@@ -509,14 +535,14 @@ prelim_df = transaction_df.merge(profile_clean2, on ='person')
 prelim_df.head(8)
 
 
-# In[35]:
+# In[40]:
 
 
 # Combine portfolio data
 final_df = prelim_df.merge(portfolio_clean2, on = 'offer_id')
 
 
-# In[36]:
+# In[41]:
 
 
 final_df.head()
@@ -524,18 +550,20 @@ final_df.head()
 
 # Drop rows
 
-# In[37]:
+# In[42]:
 
 
 #Drop rows where individual did not view offer
 final_df = final_df.drop(final_df[final_df['offer_viewed']==0].index,axis=0)
 
 
-# In[38]:
+# In[43]:
 
 
 def clean_data(portfolio=portfolio, profile=profile, transcript=transcript):
     '''
+    clean_data function will clean data of 3 data sets and then merge them into a new data set
+    
     Input:
     - portfolio = portfolio data
     - profile = profile data
@@ -711,7 +739,7 @@ def clean_data(portfolio=portfolio, profile=profile, transcript=transcript):
     return final_df
 
 
-# In[39]:
+# In[44]:
 
 
 df=clean_data()
@@ -719,25 +747,25 @@ df=clean_data()
 
 # #### Check values to see if everything matches
 
-# In[40]:
+# In[45]:
 
 
 transcript['event'].value_counts()
 
 
-# In[41]:
+# In[46]:
 
 
 transcript[transcript['event']=='offer completed'].shape
 
 
-# In[42]:
+# In[47]:
 
 
 transcript[transcript['event']=='offer viewed'].shape
 
 
-# In[43]:
+# In[48]:
 
 
 transcript[transcript['event']=='offer received'].shape
@@ -747,7 +775,7 @@ transcript[transcript['event']=='offer received'].shape
 
 # #### Check number of bogo, Discount, and informationals offers
 
-# In[44]:
+# In[49]:
 
 
 print('Bogo: ', df['bogo'].sum())
@@ -757,7 +785,7 @@ print('Informational: ', df['informational'].sum())
 
 # #### Create function to split data, train, and test a model
 
-# In[45]:
+# In[50]:
 
 
 def train_test_model(X,y):
@@ -806,7 +834,7 @@ train_test_model(X,y)
 
 # #### Test Bogo offers only
 
-# In[46]:
+# In[51]:
 
 
 # Split data into X and y
@@ -820,7 +848,7 @@ train_test_model(X,y)
 
 # #### Test discount offers only
 
-# In[47]:
+# In[52]:
 
 
 # Split data into X and y
@@ -834,7 +862,7 @@ train_test_model(X,y)
 
 # #### Test informational offers only
 
-# In[48]:
+# In[53]:
 
 
 # Split data into X and y
@@ -848,7 +876,7 @@ train_test_model(X,y)
 
 # #### Modeling Offers 
 
-# In[49]:
+# In[54]:
 
 
 # Split data into X and y
@@ -882,7 +910,7 @@ for i in [0.62,0.63,0.64,.65,0.66,0.67]:
 
 # Firstly, I will visualize the relationship between net transactions and days, gender, income as member, and offer type.
 
-# In[50]:
+# In[55]:
 
 
 #Average Net Transaction by Gender
@@ -896,8 +924,8 @@ avg_unknown_net = df[df['unknown']==1]['net_transaction'].sum()/df['unknown'].su
 objects = ('Male', 'Female', 'Other', 'Unknown')
 y_pos = np.arange(len(objects))
 performance = [avg_male_net,avg_female_net,avg_other_net,avg_unknown_net]
-
-plt.bar(y_pos, performance, align='center', alpha=0.5)
+bar_colors = ['tab:red', 'tab:blue', 'tab:orange', 'tab:red']
+plt.bar(y_pos, performance, align='center', alpha=0.5, color=bar_colors)
 plt.xticks(y_pos, objects)
 plt.ylabel('Average Net Transaction ($)')
 plt.title('Average Net Transaction by Gender')
@@ -911,7 +939,7 @@ plt.show()
 # 
 # Average Net Transaction by Offer Type
 
-# In[51]:
+# In[56]:
 
 
 # Calculate values for bar graph
@@ -923,8 +951,8 @@ avg_informational_net = df[df['informational']==1]['net_transaction'].sum()/df['
 objects = ('Bogo', 'Discount', 'informational')
 y_pos = np.arange(len(objects))
 performance = [avg_bogo_net,avg_discount_net,avg_informational_net]
-
-plt.bar(y_pos, performance, align='center', alpha=0.5)
+bar_colors = ['tab:red', 'tab:blue', 'tab:orange']
+plt.bar(y_pos, performance, align='center', alpha=0.5, color=bar_colors)
 plt.xticks(y_pos, objects)
 plt.ylabel('Average Net Transaction ($)')
 plt.title('Average Net Transaction by Offer Type')
@@ -936,7 +964,7 @@ plt.show()
 
 # Avg Net Transaction vs Income
 
-# In[52]:
+# In[57]:
 
 
 N=df.shape[0]
@@ -957,7 +985,7 @@ plt.show()
 
 # Avg Net Transaction vs Days as Member
 
-# In[53]:
+# In[58]:
 
 
 x_ax = df['days_as_member']
@@ -974,7 +1002,7 @@ plt.show()
 
 # Avg Net Transaction vs Age
 
-# In[54]:
+# In[59]:
 
 
 x_ax = df['age']
@@ -995,7 +1023,7 @@ plt.show()
 
 # Create data frame of the offers completed
 
-# In[55]:
+# In[60]:
 
 
 offer_df = df[df['offer_completed']==1]
@@ -1003,14 +1031,14 @@ offer_df = df[df['offer_completed']==1]
 
 # Offers Completed by Offer
 
-# In[56]:
+# In[61]:
 
 
 objects = ('Bogo', 'Discount', 'Informational')
 y_pos = np.arange(len(objects))
 performance = [offer_df['bogo'].sum(),offer_df['discount'].sum(),offer_df['informational'].sum()]
-
-plt.bar(y_pos, performance, align='center', alpha=0.5)
+bar_colors = ['tab:red', 'tab:blue', 'tab:orange']
+plt.bar(y_pos, performance, align='center', alpha=0.5, color=bar_colors)
 plt.xticks(y_pos, objects)
 plt.ylabel('Number of Offers Completed')
 plt.title('Offers Completed by Offer')
@@ -1022,14 +1050,14 @@ plt.show()
 
 # Offers Completed by Gender
 
-# In[57]:
+# In[62]:
 
 
 objects = ('Male', 'Female', 'Other', 'Unknown')
 y_pos = np.arange(len(objects))
 performance = [offer_df['M'].sum(),offer_df['F'].sum(),offer_df['O'].sum(),offer_df['unknown'].sum()]
-
-plt.bar(y_pos, performance, align='center', alpha=0.5)
+bar_colors = ['tab:red', 'tab:blue', 'tab:red', 'tab:orange']
+plt.bar(y_pos, performance, align='center', alpha=0.5, color=bar_colors)
 plt.xticks(y_pos, objects)
 plt.ylabel('Number of Offers Completed')
 plt.title('Offers Completed by Gender')
@@ -1041,7 +1069,7 @@ plt.show()
 
 # Age distribution
 
-# In[58]:
+# In[63]:
 
 
 plt.hist(offer_df['age'], bins = 20)
@@ -1055,7 +1083,7 @@ plt.hist(offer_df['age'], bins = 20)
 
 # Days as member distribution
 
-# In[59]:
+# In[64]:
 
 
 plt.hist(offer_df['days_as_member'], bins = 20)
@@ -1063,7 +1091,7 @@ plt.hist(offer_df['days_as_member'], bins = 20)
 
 # Income distribution
 
-# In[60]:
+# In[65]:
 
 
 plt.hist(offer_df['income'], bins = 20)
@@ -1075,7 +1103,7 @@ plt.hist(offer_df['income'], bins = 20)
 
 # #### The relationships between net_transaction and oder_completed.
 
-# In[61]:
+# In[66]:
 
 
 # Check for correlations
@@ -1099,7 +1127,7 @@ corr.style.background_gradient(cmap='coolwarm').set_precision(2)
 # Positive: Female, income, days_as_member, difficulty, duration, discount.
 # Negative: Unknown gender, informational.
 
-# In[62]:
+# In[67]:
 
 
 print('done')
